@@ -292,7 +292,8 @@ tailwind.config = {
   [data-theme=rain] .washi{background:rgba(96,116,156,.55);color:#eef4ff}
 
   /* === MOBILE UX === */
-  html, body{overflow-x:hidden}
+  html, body{overflow-x:clip}
+  @supports not (overflow-x:clip){html,body{overflow-x:hidden}}
   #themeSwitch button{width:1.75rem;height:1.75rem;font-size:.95rem;display:flex;align-items:center;justify-content:center}
   @media (max-width:640px){
     #themeSwitch{top:auto;bottom:4.6rem;right:.6rem;padding:.3rem}
