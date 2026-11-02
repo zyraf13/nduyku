@@ -594,22 +594,23 @@ function initGis() {
   if (!window.google || !google.accounts) return false;
   if (!tokenClient) tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID, scope: SCOPE, prompt: "",
-    error_callback: e => setStatus("gagal: " + (e.type || e.message || "?"), false),
+    error_callback: e => { pendingCb = null; setStatus("gagal: " + (e.type || e.message || "?"), false); toast("Izin Drive dibatalkan 🥺"); },
     callback: r => {
-      if (r.access_token) { tok = r.access_token; tokExp = Date.now() + (r.expires_in || 3500) * 1000; setStatus("terhubung ✨", true); }
+      if (r.access_token) { tok = r.access_token; tokExp = Date.now() + (r.expires_in || 3500) * 1000; setStatus("terhubung ✨", true); localStorage.setItem("ndy_tok", JSON.stringify({ t: tok, x: tokExp })); }
       const cb = pendingCb; pendingCb = null; if (cb) cb(tok);
     },
-    error_callback: () => { pendingCb = null; toast("Izin Drive dibatalkan 🥺"); }
   });
   return true;
 }
 function withToken(cb) {
   if (!initGis()) { toast("Google script belum siap, coba lagi 🙏"); return; }
-  if (tok && Date.now() < tokExp - 60000) { cb(tok); return; }
+  if (!tok) { try { const c = JSON.parse(localStorage.getItem("ndy_tok") || "null"); if (c && Date.now() < c.x - 60000) { tok = c.t; tokExp = c.x; } } catch (e) {} }
+  if (tok && Date.now() < tokExp - 60000) { setStatus("terhubung ✨", true); cb(tok); return; }
   pendingCb = cb; tokenClient.requestAccessToken();
 }
 async function driveFetch(url, opts) {
   const r = await fetch(url, opts);
+  if (r.status === 401) { tok = null; localStorage.removeItem("ndy_tok"); throw new Error("Sesi Drive habis — klik Upload sekali lagi buat sambung ulang 🔄"); }
   if (!r.ok) throw new Error("Drive API " + r.status);
   return r.json();
 }
