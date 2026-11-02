@@ -290,6 +290,17 @@ tailwind.config = {
     78.8%{opacity:0} 79.2%{opacity:.9} 80%{opacity:.12} 81.2%{opacity:.55} 83%{opacity:0}
     100%{opacity:0}}
   [data-theme=rain] .washi{background:rgba(96,116,156,.55);color:#eef4ff}
+
+  /* === MOBILE UX === */
+  html, body{overflow-x:hidden}
+  #themeSwitch button{width:1.75rem;height:1.75rem;font-size:.95rem;display:flex;align-items:center;justify-content:center}
+  @media (max-width:640px){
+    #themeSwitch{top:auto;bottom:4.6rem;right:.6rem;padding:.3rem}
+    #themeSwitch button{width:2.5rem;height:2.5rem;font-size:1.15rem}
+    body{padding-bottom:7.5rem}
+    .hero-title{font-size:2.05rem}
+    section.p-lg{padding:1.1rem}
+  }
 </style>
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("ndy-theme")||"light"}catch(e){document.documentElement.dataset.theme="light"}</script>
 </head>
