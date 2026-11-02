@@ -594,6 +594,7 @@ function initGis() {
   if (!window.google || !google.accounts) return false;
   if (!tokenClient) tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID, scope: SCOPE, prompt: "",
+    error_callback: e => setStatus("gagal: " + (e.type || e.message || "?"), false),
     callback: r => {
       if (r.access_token) { tok = r.access_token; tokExp = Date.now() + (r.expires_in || 3500) * 1000; setStatus("terhubung ✨", true); }
       const cb = pendingCb; pendingCb = null; if (cb) cb(tok);
